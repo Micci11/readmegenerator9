@@ -1,69 +1,121 @@
-const inquirer = require('inquirer');
 
-// TODO: Create an array of questions for user input
+// import modules 
+import inquirer from 'inquirer';
+import fs from 'fs/promises';
+
+// define questions for user input 
 const questions = [
   {
     type: 'input',
     name: 'title',
     message: 'What is the title of your project?',
-  },
-  {
-    type: 'input',
-    name: 'description',
-    message: 'Enter a description of your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'input',
     name: 'installation',
     message: 'Enter installation instructions for your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'input',
     name: 'usage',
     message: 'Enter usage information for your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'input',
     name: 'contributing',
     message: 'Enter contribution guidelines for your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'input',
-    name: 'tests',
-    message: 'Enter test instructions for your project:',
+    name: 'instructions',
+    message: 'Enter instructions for your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
+  },
+  {
+    type: 'input',
+    name: 'credits',
+    message: 'Enter credits for your project:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'list',
     name: 'license',
     message: 'Choose a license for your project:',
-    choices: ['MIT', 'GPLv2', 'Apache', 'GPLv3', 'BSD 3-Clause'],
+    choices: ['The MIT License', 'The GPL License', 'Apache license', 'GNU license', 'N/A'],
   },
   {
     type: 'input',
     name: 'username',
     message: 'Enter your GitHub username:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
   {
     type: 'input',
     name: 'email',
     message: 'Enter your email address:',
+    validate: (value) => (value ? true : 'I need a value to continue'),
   },
 ];
 
-// TODO: Create a function to write README file
+// function to write readme file 
 function writeToFile(fileName, data) {
   fs.writeFile(fileName, data, (err) =>
     err ? console.error(err) : console.log('README.md file created!')
   );
 }
 
-// TODO: Create a function to initialize app
+// function to initialize the app 
 function init() {
   inquirer.prompt(questions).then((answers) => {
-    // process user answers and generate readmeData
-    writeToFile('README.md', readmeData);
+    const {
+      title,
+      installation,
+      usage,
+      contributing,
+      instructions,
+      credits,
+      license,
+      username,
+      email,
+    } = answers;
+
+    const template = `# ${title}
+
+* [Installation](#installation)
+* [Usage](#usage)
+* [Contribution](#contribution)
+* [Credits](#credits)
+* [License](#license)
+
+## Installation
+${installation}
+
+## Usage
+${usage}
+
+## Contribution
+${contributing}
+
+## Instructions
+${instructions}
+
+## Credits
+${credits}
+
+## License
+${license}
+
+## Contact
+* Github: ${username}
+* Email: ${email}`;
+
+    writeToFile('README.md', template);
   });
 }
 
-// Function call to initialize app
+// call the init function to run 
 init();
